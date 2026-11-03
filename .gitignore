@@ -1,0 +1,46 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local datasets and caches
+data/raw/
+data/processed/images/
+.cache/
+huggingface/
+
+# Model files (large binary files)
+*.keras
+*.h5
+*.weights.h5
+*.tflite
+*.onnx
+*.pt
+*.pth
+*.ckpt
+
+# Model artifacts
+artifacts/models/*
+!artifacts/models/.gitkeep
+
+# Temporary feature arrays
+artifacts/features/
