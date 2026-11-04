@@ -1,0 +1,27 @@
+{
+    "project_name": "Defactify Image Dataset Preprocessing",
+    "splits": {
+        "train": 42000,
+        "validation": 9000,
+        "test": 45000
+    },
+    "label_mapping": {
+        "Label_A": {
+            "0": "Real",
+            "1": "AI-Generated"
+        },
+        "Label_B": {
+            "0": "Generator 0",
+            "1": "Generator 1",
+            "2": "Generator 2",
+            "3": "Generator 3",
+            "4": "Generator 4",
+            "5": "Generator 5"
+        }
+    },
+    "image_resolution": [
+        224,
+        224
+    ],
+    "description": "Manifest dataset yang divalidasi dan disiapkan bersama Michael dan Bagas untuk kolaborasi pemodelan."
+}
