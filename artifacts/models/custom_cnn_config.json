@@ -1,0 +1,25 @@
+{
+    "experiment": "Model A - Custom CNN",
+    "dataset": "Rajarshi-Roy-research/Defactify_Image_Dataset",
+    "dataset_revision": "1c3b714c9691eb6dd11c2c1e92eab1ac29584fa0",
+    "target": "label_a",
+    "class_mapping": {
+        "0": "Real",
+        "1": "AI-Generated"
+    },
+    "image_size": 224,
+    "batch_size": 16,
+    "epochs_requested": 10,
+    "epochs_completed": 10,
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "loss": "Binary Crossentropy",
+    "class_weights": {
+        "0": 3.0,
+        "1": 0.6
+    },
+    "seed": 42,
+    "training_samples": 42018,
+    "validation_samples": 8994,
+    "model": "custom_cnn_best.keras"
+}
