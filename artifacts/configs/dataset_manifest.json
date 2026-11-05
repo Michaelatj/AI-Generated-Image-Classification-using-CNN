@@ -1,13 +1,23 @@
 {
     "project_name": "Real vs AI-Generated Image Classification",
     "dataset_id": "Rajarshi-Roy-research/Defactify_Image_Dataset",
-    "dataset_revision": "1c3b714c9691eb6dd11c2c1e92eab1ac29584fa0",
-    "created_at_utc": "2026-11-05T04:44:06.796783+00:00",
+    "dataset_revision": "main",
+    "created_at_utc": "2026-11-05T15:03:47.799003+00:00",
     "target_column": "Label_A",
     "official_source_split_counts": {
         "train": 42000,
         "validation": 9000,
         "test": 45000
+    },
+    "model_split_counts": {
+        "train": 42018,
+        "validation": 8994,
+        "test": 44988
+    },
+    "model_split_group_counts": {
+        "train": 4320,
+        "validation": 926,
+        "test": 4629
     },
     "label_mapping": {
         "target_column": "Label_A",
@@ -25,7 +35,7 @@
             "5": "Midjourney v6"
         }
     },
-    "label_a_distribution": {
+    "official_source_label_a_distribution": {
         "train": {
             "Real": 7000,
             "AI-Generated": 35000
@@ -37,6 +47,20 @@
         "test": {
             "Real": 7500,
             "AI-Generated": 37500
+        }
+    },
+    "model_split_label_a_distribution": {
+        "train": {
+            "Real": 7003,
+            "AI-Generated": 35015
+        },
+        "validation": {
+            "Real": 1499,
+            "AI-Generated": 7495
+        },
+        "test": {
+            "Real": 7498,
+            "AI-Generated": 37490
         }
     },
     "label_b_distribution": {
@@ -69,7 +93,7 @@
         224,
         224
     ],
-    "caption_overlap_audit": [
+    "official_caption_overlap_audit": [
         {
             "split_a": "train",
             "split_b": "validation",
@@ -86,6 +110,33 @@
             "overlapping_unique_captions": 8
         }
     ],
-    "split_policy": "Official dataset splits retained; caption overlap is reported, not automatically reassigned.",
+    "group_split_overlap_validation": [
+        {
+            "split_a": "train",
+            "split_b": "validation",
+            "overlapping_caption_groups": 0
+        },
+        {
+            "split_a": "train",
+            "split_b": "test",
+            "overlapping_caption_groups": 0
+        },
+        {
+            "split_a": "validation",
+            "split_b": "test",
+            "overlapping_caption_groups": 0
+        }
+    ],
+    "target_model_split_ratios": {
+        "train": 0.4375,
+        "validation": 0.09375,
+        "test": 0.46875
+    },
+    "split_policy": "Custom group-based split: all official source splits were pooled and reassigned by caption_group_id. This is not the original official Hugging Face split.",
+    "source_reference_columns": {
+        "source_split": "Original Hugging Face split used to retrieve the image.",
+        "row_idx": "Original row index inside source_split.",
+        "assigned_split": "New model split: train, validation, or test."
+    },
     "image_rows_are_not_exported": true
 }
