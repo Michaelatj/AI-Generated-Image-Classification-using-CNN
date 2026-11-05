@@ -1,0 +1,20 @@
+{
+    "shared_image_input": {
+        "image_size": [
+            224,
+            224
+        ],
+        "color_mode": "RGB",
+        "resize_interpolation": "bilinear",
+        "channels": 3
+    },
+    "model_specific_processing": {
+        "custom_cnn": "Define normalization in the Custom CNN notebook.",
+        "mobilenetv2": "Use the official preprocessing function for the selected framework and pretrained weights."
+    },
+    "augmentation": {
+        "applied_in_this_notebook": false,
+        "policy": "Define training-only augmentation in each model notebook; do not augment validation/test."
+    },
+    "note": "This config describes the shared preprocessing contract. It does not mean images have already been resized or normalized on disk."
+}

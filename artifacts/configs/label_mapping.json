@@ -1,0 +1,16 @@
+{
+    "target_column": "Label_A",
+    "target_task": "Real vs AI-Generated image classification",
+    "Label_A": {
+        "0": "Real",
+        "1": "AI-Generated"
+    },
+    "Label_B": {
+        "0": "Real",
+        "1": "Stable Diffusion 2.1",
+        "2": "Stable Diffusion XL (SDXL)",
+        "3": "Stable Diffusion 3",
+        "4": "DALL-E 3",
+        "5": "Midjourney v6"
+    }
+}

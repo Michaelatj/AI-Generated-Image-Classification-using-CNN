@@ -1,0 +1,91 @@
+{
+    "project_name": "Real vs AI-Generated Image Classification",
+    "dataset_id": "Rajarshi-Roy-research/Defactify_Image_Dataset",
+    "dataset_revision": "1c3b714c9691eb6dd11c2c1e92eab1ac29584fa0",
+    "created_at_utc": "2026-11-05T04:44:06.796783+00:00",
+    "target_column": "Label_A",
+    "official_source_split_counts": {
+        "train": 42000,
+        "validation": 9000,
+        "test": 45000
+    },
+    "label_mapping": {
+        "target_column": "Label_A",
+        "target_task": "Real vs AI-Generated image classification",
+        "Label_A": {
+            "0": "Real",
+            "1": "AI-Generated"
+        },
+        "Label_B": {
+            "0": "Real",
+            "1": "Stable Diffusion 2.1",
+            "2": "Stable Diffusion XL (SDXL)",
+            "3": "Stable Diffusion 3",
+            "4": "DALL-E 3",
+            "5": "Midjourney v6"
+        }
+    },
+    "label_a_distribution": {
+        "train": {
+            "Real": 7000,
+            "AI-Generated": 35000
+        },
+        "validation": {
+            "Real": 1500,
+            "AI-Generated": 7500
+        },
+        "test": {
+            "Real": 7500,
+            "AI-Generated": 37500
+        }
+    },
+    "label_b_distribution": {
+        "train": {
+            "Real": 7000,
+            "Stable Diffusion 2.1": 7000,
+            "Stable Diffusion XL (SDXL)": 7000,
+            "Stable Diffusion 3": 7000,
+            "DALL-E 3": 7000,
+            "Midjourney v6": 7000
+        },
+        "validation": {
+            "Real": 1500,
+            "Stable Diffusion 2.1": 1500,
+            "Stable Diffusion XL (SDXL)": 1500,
+            "Stable Diffusion 3": 1500,
+            "DALL-E 3": 1500,
+            "Midjourney v6": 1500
+        },
+        "test": {
+            "Real": 7500,
+            "Stable Diffusion 2.1": 7500,
+            "Stable Diffusion XL (SDXL)": 7500,
+            "Stable Diffusion 3": 7500,
+            "DALL-E 3": 7500,
+            "Midjourney v6": 7500
+        }
+    },
+    "target_image_size": [
+        224,
+        224
+    ],
+    "caption_overlap_audit": [
+        {
+            "split_a": "train",
+            "split_b": "validation",
+            "overlapping_unique_captions": 26
+        },
+        {
+            "split_a": "train",
+            "split_b": "test",
+            "overlapping_unique_captions": 34
+        },
+        {
+            "split_a": "validation",
+            "split_b": "test",
+            "overlapping_unique_captions": 8
+        }
+    ],
+    "split_policy": "Official dataset splits retained; caption overlap is reported, not automatically reassigned.",
+    "image_rows_are_not_exported": true
+}

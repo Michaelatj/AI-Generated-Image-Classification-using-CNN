@@ -1,0 +1,4 @@
+split,sampled_images,unique_resolutions,median_width,median_height,min_width,max_width,min_height,max_height
+test,500,46,640.0,640.0,270,1024,267,1024
+train,500,49,640.0,500.0,270,1024,213,1024
+validation,500,39,640.0,640.0,270,1024,239,1024

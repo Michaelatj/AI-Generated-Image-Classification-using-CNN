@@ -1,0 +1,19 @@
+split,label_b_id,source_name,count,percentage
+train,0,Real,7000,16.666666666666668
+train,1,Stable Diffusion 2.1,7000,16.666666666666668
+train,2,Stable Diffusion XL (SDXL),7000,16.666666666666668
+train,3,Stable Diffusion 3,7000,16.666666666666668
+train,4,DALL-E 3,7000,16.666666666666668
+train,5,Midjourney v6,7000,16.666666666666668
+validation,0,Real,1500,16.666666666666668
+validation,1,Stable Diffusion 2.1,1500,16.666666666666668
+validation,2,Stable Diffusion XL (SDXL),1500,16.666666666666668
+validation,3,Stable Diffusion 3,1500,16.666666666666668
+validation,4,DALL-E 3,1500,16.666666666666668
+validation,5,Midjourney v6,1500,16.666666666666668
+test,0,Real,7500,16.666666666666668
+test,1,Stable Diffusion 2.1,7500,16.666666666666668
+test,2,Stable Diffusion XL (SDXL),7500,16.666666666666668
+test,3,Stable Diffusion 3,7500,16.666666666666668
+test,4,DALL-E 3,7500,16.666666666666668
+test,5,Midjourney v6,7500,16.666666666666668

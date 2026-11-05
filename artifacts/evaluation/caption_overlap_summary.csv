@@ -1,0 +1,4 @@
+split_a,split_b,overlapping_unique_captions
+train,validation,26
+train,test,34
+validation,test,8

@@ -1,0 +1,7 @@
+split,label_id,class_name,count,percentage
+train,0,Real,7000,16.666666666666668
+train,1,AI-Generated,35000,83.33333333333333
+validation,0,Real,1500,16.666666666666668
+validation,1,AI-Generated,7500,83.33333333333333
+test,0,Real,7500,16.666666666666668
+test,1,AI-Generated,37500,83.33333333333333
