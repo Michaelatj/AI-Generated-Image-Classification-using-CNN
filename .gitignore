@@ -41,6 +41,9 @@ huggingface/
 # Model artifacts
 artifacts/models/*
 !artifacts/models/.gitkeep
+!artifacts/models/*.keras
+!artifacts/models/*.csv
+!artifacts/models/*.json
 
 # Temporary feature arrays
 artifacts/features/
