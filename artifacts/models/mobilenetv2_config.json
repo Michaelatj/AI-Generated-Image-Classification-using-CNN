@@ -1,0 +1,102 @@
+{
+    "experiment": "Model B - MobileNetV2 (transfer learning)",
+    "dataset": "Rajarshi-Roy-research/Defactify_Image_Dataset",
+    "dataset_revision": "1c3b714c9691eb6dd11c2c1e92eab1ac29584fa0",
+    "target": "label_a",
+    "class_mapping": {
+        "0": "Real",
+        "1": "AI-Generated"
+    },
+    "image_size": 224,
+    "color_mode": "RGB",
+    "resize_interpolation": "bilinear",
+    "model_specific_preprocessing": "Custom layer MobileNetV2Preprocess inside the model: x/127.5 - 1 -> [-1,1] (same as mobilenet_v2.preprocess_input). The saved model expects raw 0-255 RGB, 224x224.",
+    "augmentation_training_only": [
+        "RandomFlip(horizontal)",
+        "RandomZoom(0.1)"
+    ],
+    "backbone": "MobileNetV2, ImageNet weights, include_top=False",
+    "head": "GlobalAveragePooling2D -> Dropout(0.2) -> Dense(1, sigmoid)",
+    "batch_size": 32,
+    "seed": 42,
+    "class_weights": {
+        "0": 3.0,
+        "1": 0.6
+    },
+    "tuning": {
+        "ran": true,
+        "subset_train": 6000,
+        "subset_val": 1500,
+        "epochs": 2,
+        "results": [
+            {
+                "learning_rate": 0.001,
+                "dropout": 0.2,
+                "best_val_loss": 0.5872264504432678,
+                "val_accuracy": 0.7073333263397217,
+                "val_auc": 0.851638674736023
+            },
+            {
+                "learning_rate": 0.001,
+                "dropout": 0.4,
+                "best_val_loss": 0.5916505455970764,
+                "val_accuracy": 0.6899999976158142,
+                "val_auc": 0.8072620034217834
+            },
+            {
+                "learning_rate": 0.0003,
+                "dropout": 0.2,
+                "best_val_loss": 0.6546419262886047,
+                "val_accuracy": 0.6213333606719971,
+                "val_auc": 0.7753397822380066
+            },
+            {
+                "learning_rate": 0.0003,
+                "dropout": 0.4,
+                "best_val_loss": 0.6812139749526978,
+                "val_accuracy": 0.5833333134651184,
+                "val_auc": 0.6754468679428101
+            }
+        ],
+        "selected": {
+            "learning_rate": 0.001,
+            "dropout": 0.2
+        }
+    },
+    "stage1_frozen": {
+        "optimizer": "Adam",
+        "learning_rate": 0.001,
+        "epochs_requested": 8,
+        "epochs_completed": 6
+    },
+    "stage2_finetune": {
+        "optimizer": "Adam",
+        "learning_rate": 1e-05,
+        "unfrozen_backbone_layers": 30,
+        "batchnorm_frozen": true,
+        "epochs_requested": 8,
+        "epochs_completed": 4
+    },
+    "validation_results": {
+        "stage1_frozen": {
+            "accuracy": 0.7480542659759521,
+            "auc": 0.8918741941452026,
+            "loss": 0.5448484420776367,
+            "precision": 0.9703183770179749,
+            "recall": 0.7196797728538513
+        },
+        "stage2_finetune": {
+            "accuracy": 0.8328886032104492,
+            "auc": 0.9341714978218079,
+            "loss": 0.3845972418785095,
+            "precision": 0.9751030802726746,
+            "recall": 0.8204135894775391
+        }
+    },
+    "best_model_stage": "stage2_finetune",
+    "training_samples": 42018,
+    "validation_samples": 8994,
+    "model_file": "mobilenetv2_best.keras",
+    "model_size_mb": 20.73,
+    "total_parameters": 2259265
+}
