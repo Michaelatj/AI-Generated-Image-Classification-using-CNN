@@ -8,18 +8,121 @@
         "1": "AI-Generated"
     },
     "image_size": 224,
-    "batch_size": 16,
+    "color_mode": "RGB",
+    "resize_interpolation": "bilinear",
+    "model_specific_preprocessing": "Rescaling(1/255) inside the model. The saved model expects raw 0-255 RGB, 224x224.",
+    "augmentation_training_only": "none",
+    "shuffle": "full permutation of training rows every epoch",
+    "architecture": "Custom CNN, 3 convolution blocks (32, 64, 128 filters, 2 Conv-BN-ReLU per block, MaxPooling), GlobalAveragePooling2D, Dense(128), Dropout, Dense(1, sigmoid)",
+    "head_dropout": 0.3,
+    "batch_size": 32,
+    "optimizer": "Adam",
+    "learning_rate": 0.0003,
+    "loss": "Binary Crossentropy",
     "epochs_requested": 10,
     "epochs_completed": 10,
-    "optimizer": "Adam",
-    "learning_rate": 0.001,
-    "loss": "Binary Crossentropy",
     "class_weights": {
         "0": 3.0,
         "1": 0.6
     },
     "seed": 42,
+    "tuning": {
+        "ran": true,
+        "subset_train": 6000,
+        "subset_val": 1500,
+        "epochs": 2,
+        "results": [
+            {
+                "learning_rate": 0.0003,
+                "head_dropout": 0.3,
+                "best_val_loss": 0.3991332948207855,
+                "val_accuracy": 0.8320000171661377,
+                "val_auc": 0.7668934464454651
+            },
+            {
+                "learning_rate": 0.0003,
+                "head_dropout": 0.5,
+                "best_val_loss": 0.4495352506637573,
+                "val_accuracy": 0.8273333311080933,
+                "val_auc": 0.6775636076927185
+            },
+            {
+                "learning_rate": 0.001,
+                "head_dropout": 0.5,
+                "best_val_loss": 0.45162951946258545,
+                "val_accuracy": 0.8306666612625122,
+                "val_auc": 0.6661595106124878
+            },
+            {
+                "learning_rate": 0.001,
+                "head_dropout": 0.3,
+                "best_val_loss": 0.5035250782966614,
+                "val_accuracy": 0.7846666574478149,
+                "val_auc": 0.6636554002761841
+            }
+        ],
+        "selected": {
+            "learning_rate": 0.0003,
+            "head_dropout": 0.3
+        }
+    },
+    "validation_results": {
+        "keras_evaluate": {
+            "accuracy": 0.933844804763794,
+            "auc": 0.9671682119369507,
+            "loss": 0.17817693948745728,
+            "precision": 0.9691324234008789,
+            "recall": 0.9509006142616272
+        },
+        "roc_auc": 0.9673870194094261,
+        "at_threshold_0.50": {
+            "threshold": 0.5,
+            "accuracy": 0.9338447854124973,
+            "balanced_accuracy": 0.899733155436958,
+            "precision_ai": 0.9691324449279304,
+            "recall_ai": 0.9509006004002668,
+            "recall_real": 0.8485657104736491,
+            "f1_ai": 0.9599299616135767,
+            "f1_macro": 0.8851895746264762,
+            "confusion_matrix": [
+                [
+                    1272,
+                    227
+                ],
+                [
+                    368,
+                    7127
+                ]
+            ]
+        },
+        "at_tuned_threshold": {
+            "threshold": 0.37,
+            "accuracy": 0.9404047142539471,
+            "balanced_accuracy": 0.886057371581054,
+            "precision_ai": 0.9611663353214049,
+            "recall_ai": 0.9675783855903936,
+            "recall_real": 0.8045363575717145,
+            "f1_ai": 0.9643617021276596,
+            "f1_macro": 0.8912717601547389,
+            "confusion_matrix": [
+                [
+                    1206,
+                    293
+                ],
+                [
+                    243,
+                    7252
+                ]
+            ]
+        },
+        "tuned_threshold": 0.37,
+        "threshold_selection": "max macro-F1 on validation set"
+    },
+    "decision_threshold": 0.37,
+    "decision_threshold_selection": "max macro-F1 on validation set",
     "training_samples": 42018,
     "validation_samples": 8994,
-    "model": "custom_cnn_best.keras"
+    "model_file": "custom_cnn_best.keras",
+    "model_size_mb": 3.6,
+    "total_parameters": 304993
 }
