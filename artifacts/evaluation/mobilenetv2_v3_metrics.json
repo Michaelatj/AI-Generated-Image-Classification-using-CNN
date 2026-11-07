@@ -1,0 +1,52 @@
+{
+    "keras_evaluate": {
+        "accuracy": 0.9011563062667847,
+        "auc": 0.9499736428260803,
+        "loss": 0.2435789704322815,
+        "precision": 0.9633838534355164,
+        "recall": 0.9162108302116394
+    },
+    "roc_auc": 0.9500895638230691,
+    "at_threshold_0.50": {
+        "threshold": 0.5,
+        "accuracy": 0.9011563264398488,
+        "balanced_accuracy": 0.87104736490994,
+        "precision_ai": 0.9633838383838383,
+        "recall_ai": 0.9162108072048032,
+        "recall_real": 0.8258839226150767,
+        "f1_ai": 0.9392053614169459,
+        "f1_macro": 0.8375075841260065,
+        "confusion_matrix": [
+            [
+                1238,
+                261
+            ],
+            [
+                628,
+                6867
+            ]
+        ]
+    },
+    "at_tuned_threshold": {
+        "threshold": 0.29,
+        "accuracy": 0.9183900378029798,
+        "balanced_accuracy": 0.83815877251501,
+        "precision_ai": 0.9443933219403181,
+        "recall_ai": 0.9585056704469647,
+        "recall_real": 0.7178118745830554,
+        "f1_ai": 0.9513971659382863,
+        "f1_macro": 0.848532955803516,
+        "confusion_matrix": [
+            [
+                1076,
+                423
+            ],
+            [
+                311,
+                7184
+            ]
+        ]
+    },
+    "tuned_threshold": 0.29,
+    "threshold_selection": "max macro-F1 on validation set"
+}
