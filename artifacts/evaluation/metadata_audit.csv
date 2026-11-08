@@ -1,4 +1,0 @@
-split,rows,missing_caption,missing_label_a,missing_label_b
-train,42000,0,0,0
-validation,9000,0,0,0
-test,45000,0,0,0

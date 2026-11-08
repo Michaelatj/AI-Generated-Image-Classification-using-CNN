@@ -1,5 +1,8 @@
 {
-    "experiment": "Model B - MobileNetV2 (transfer learning)",
+    "experiment": "Model B - MobileNetV2 transfer learning (v3)",
+    "environment": "Colab/other",
+    "tensorflow": "2.21.0",
+    "keras": "3.13.2",
     "dataset": "Rajarshi-Roy-research/Defactify_Image_Dataset",
     "dataset_revision": "1c3b714c9691eb6dd11c2c1e92eab1ac29584fa0",
     "target": "label_a",
@@ -7,22 +10,36 @@
         "0": "Real",
         "1": "AI-Generated"
     },
-    "image_size": 224,
-    "color_mode": "RGB",
-    "resize_interpolation": "bilinear",
-    "model_specific_preprocessing": "Custom layer MobileNetV2Preprocess inside the model: x/127.5 - 1 -> [-1,1] (same as mobilenet_v2.preprocess_input). The saved model expects raw 0-255 RGB, 224x224.",
-    "augmentation_training_only": [
-        "RandomFlip(horizontal)",
-        "RandomZoom(0.1)"
-    ],
+    "preprocessing": {
+        "image_size": 224,
+        "color_mode": "RGB",
+        "center_square_crop": true,
+        "resize_interpolation": "bilinear",
+        "model_input": "raw 0-255 RGB, 224x224x3; MobileNetV2Preprocess (x/127.5 - 1) is inside the model",
+        "custom_objects_required": "MobileNetV2Preprocess (package 'aigen')"
+    },
+    "augmentation_training_only": {
+        "enabled": true,
+        "horizontal_flip": 0.5,
+        "random_crop_fraction": [
+            0.8,
+            1.0
+        ],
+        "jpeg_probability": 0.5,
+        "jpeg_quality": [
+            60,
+            95
+        ]
+    },
+    "shuffle": "full permutation of training rows every epoch",
     "backbone": "MobileNetV2, ImageNet weights, include_top=False",
     "head": "GlobalAveragePooling2D -> Dropout(0.2) -> Dense(1, sigmoid)",
     "batch_size": 32,
-    "seed": 42,
     "class_weights": {
         "0": 3.0,
         "1": 0.6
     },
+    "seed": 42,
     "tuning": {
         "ran": true,
         "subset_train": 6000,
@@ -32,30 +49,30 @@
             {
                 "learning_rate": 0.001,
                 "dropout": 0.2,
-                "best_val_loss": 0.5872264504432678,
-                "val_accuracy": 0.7073333263397217,
-                "val_auc": 0.851638674736023
+                "best_val_loss": 0.40833720564842224,
+                "val_accuracy": 0.8273333311080933,
+                "val_auc": 0.8607543706893921
             },
             {
                 "learning_rate": 0.001,
                 "dropout": 0.4,
-                "best_val_loss": 0.5916505455970764,
-                "val_accuracy": 0.6899999976158142,
-                "val_auc": 0.8072620034217834
+                "best_val_loss": 0.41103750467300415,
+                "val_accuracy": 0.8226666450500488,
+                "val_auc": 0.8545428514480591
             },
             {
                 "learning_rate": 0.0003,
                 "dropout": 0.2,
-                "best_val_loss": 0.6546419262886047,
-                "val_accuracy": 0.6213333606719971,
-                "val_auc": 0.7753397822380066
+                "best_val_loss": 0.6124898791313171,
+                "val_accuracy": 0.659333348274231,
+                "val_auc": 0.6827797889709473
             },
             {
                 "learning_rate": 0.0003,
                 "dropout": 0.4,
-                "best_val_loss": 0.6812139749526978,
-                "val_accuracy": 0.5833333134651184,
-                "val_auc": 0.6754468679428101
+                "best_val_loss": 0.6268335580825806,
+                "val_accuracy": 0.6520000100135803,
+                "val_auc": 0.7684227824211121
             }
         ],
         "selected": {
@@ -67,36 +84,92 @@
         "optimizer": "Adam",
         "learning_rate": 0.001,
         "epochs_requested": 8,
-        "epochs_completed": 6
+        "epochs_completed": 5,
+        "early_stopping_patience": 3
     },
     "stage2_finetune": {
         "optimizer": "Adam",
-        "learning_rate": 1e-05,
-        "unfrozen_backbone_layers": 30,
+        "learning_rate": 5e-06,
+        "unfrozen_backbone_layers": 20,
         "batchnorm_frozen": true,
-        "epochs_requested": 8,
-        "epochs_completed": 4
+        "epochs_requested": 10,
+        "epochs_completed": 8,
+        "early_stopping_patience": 2
     },
-    "validation_results": {
+    "selected_stage": "stage2_finetune",
+    "stage_validation_results": {
         "stage1_frozen": {
-            "accuracy": 0.7480542659759521,
-            "auc": 0.8918741941452026,
-            "loss": 0.5448484420776367,
-            "precision": 0.9703183770179749,
-            "recall": 0.7196797728538513
+            "accuracy": 0.8492327928543091,
+            "auc": 0.8960703611373901,
+            "loss": 0.35684195160865784,
+            "precision": 0.9462131261825562,
+            "recall": 0.868445634841919
         },
         "stage2_finetune": {
-            "accuracy": 0.8328886032104492,
-            "auc": 0.9341714978218079,
-            "loss": 0.3845972418785095,
-            "precision": 0.9751030802726746,
-            "recall": 0.8204135894775391
+            "accuracy": 0.9011563062667847,
+            "auc": 0.9499736428260803,
+            "loss": 0.2435789704322815,
+            "precision": 0.9633838534355164,
+            "recall": 0.9162108302116394
         }
     },
-    "best_model_stage": "stage2_finetune",
+    "validation_results": {
+        "keras_evaluate": {
+            "accuracy": 0.9011563062667847,
+            "auc": 0.9499736428260803,
+            "loss": 0.2435789704322815,
+            "precision": 0.9633838534355164,
+            "recall": 0.9162108302116394
+        },
+        "roc_auc": 0.9500895638230691,
+        "at_threshold_0.50": {
+            "threshold": 0.5,
+            "accuracy": 0.9011563264398488,
+            "balanced_accuracy": 0.87104736490994,
+            "precision_ai": 0.9633838383838383,
+            "recall_ai": 0.9162108072048032,
+            "recall_real": 0.8258839226150767,
+            "f1_ai": 0.9392053614169459,
+            "f1_macro": 0.8375075841260065,
+            "confusion_matrix": [
+                [
+                    1238,
+                    261
+                ],
+                [
+                    628,
+                    6867
+                ]
+            ]
+        },
+        "at_tuned_threshold": {
+            "threshold": 0.29,
+            "accuracy": 0.9183900378029798,
+            "balanced_accuracy": 0.83815877251501,
+            "precision_ai": 0.9443933219403181,
+            "recall_ai": 0.9585056704469647,
+            "recall_real": 0.7178118745830554,
+            "f1_ai": 0.9513971659382863,
+            "f1_macro": 0.848532955803516,
+            "confusion_matrix": [
+                [
+                    1076,
+                    423
+                ],
+                [
+                    311,
+                    7184
+                ]
+            ]
+        },
+        "tuned_threshold": 0.29,
+        "threshold_selection": "max macro-F1 on validation set"
+    },
+    "decision_threshold": 0.29,
+    "decision_threshold_selection": "max macro-F1 on validation set",
     "training_samples": 42018,
     "validation_samples": 8994,
-    "model_file": "mobilenetv2_best.keras",
-    "model_size_mb": 20.73,
+    "model_file": "mobilenetv2_v3_best.keras",
+    "model_size_mb": 18.31,
     "total_parameters": 2259265
 }
