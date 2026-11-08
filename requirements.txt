@@ -3,3 +3,8 @@ keras==3.13.2
 gradio==5.49.1
 numpy==2.1.3
 pillow==11.3.0
+pandas
+matplotlib
+seaborn
+scikit-learn
+datasets
