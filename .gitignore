@@ -41,9 +41,11 @@ huggingface/
 # Model artifacts
 artifacts/models/*
 !artifacts/models/.gitkeep
-!artifacts/models/*.keras
-!artifacts/models/*.csv
-!artifacts/models/*.json
+!artifacts/models/custom_cnn_v3_best.keras
+!artifacts/models/custom_cnn_v3_config.json
 
 # Temporary feature arrays
 artifacts/features/
+
+# Hugging Face Spaces bundle uses its own nested Git repository
+hf_space/.git/

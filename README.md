@@ -1,101 +1,113 @@
-# Real vs AI-Generated Image Classification Using CNN
+---
+title: Real vs AI-Generated Image Classifier
+emoji: 🖼️
+colorFrom: purple
+colorTo: blue
+sdk: gradio
+sdk_version: 5.49.1
+app_file: app/app.py
+pinned: false
+---
 
-## 1. Project Overview
+# Real vs AI-Generated Image Classification
 
-This project aims to develop a deep learning-based image
-classification system to distinguish between real images
-and AI-generated images using Convolutional Neural Networks (CNN).
+Aplikasi Gradio ini membandingkan gambar masukan dengan dua kelas: **Real**
+dan **AI-generated**. Model yang dipakai adalah **Custom CNN v3**, dipilih
+berdasarkan hasil test pada `final_testing_comparison.ipynb` dan
+`artifacts/evaluation/final_test_scenarios_v3.csv`.
 
-The project compares two CNN approaches:
-- Custom CNN (Training from Scratch)
-- MobileNetV2 (Transfer Learning)
+Model menerima gambar RGB 224 × 224. Sebelum masuk ke model, gambar dikonversi
+ke RGB, di-center-crop menjadi persegi, lalu di-resize dengan bilinear.
+Normalisasi `1/255` sudah berada di dalam model. Augmentasi yang digunakan
+saat training tidak diterapkan saat inference.
 
-## 2. Problem Statement
+## Performa test
 
-The advancement of generative AI has made AI-generated
-images increasingly realistic and difficult to distinguish
-from authentic images.
+Pada test split group-based (44.988 gambar), threshold validation **0,55**
+menghasilkan:
 
-This project aims to develop a CNN-based classification
-system that can help identify whether an image is real
-or AI-generated.
+| Metrik              |  Hasil |
+| ------------------- | -----: |
+| Accuracy            | 94,71% |
+| Macro-F1            | 90,21% |
+| Balanced accuracy   | 89,16% |
+| ROC-AUC             | 97,44% |
+| Recall Real         | 80,85% |
+| Recall AI-generated | 97,48% |
 
-## 3. Dataset
+Label 0 berarti Real; label 1 berarti AI-generated. Nilai sigmoid model adalah
+probabilitas AI-generated. Nilai tersebut diklasifikasikan sebagai
+AI-generated jika sekurang-kurangnya 0,55, selain itu Real. Confidence score
+adalah probabilitas kelas yang diprediksi dan bukan jaminan kebenaran.
 
-Dataset: Defactify Image Dataset
+## Menjalankan secara lokal
 
-Source:
-https://huggingface.co/datasets/Rajarshi-Roy-research/Defactify_Image_Dataset
+Pastikan model terpilih tersedia di
+`artifacts/models/custom_cnn_v3_best.keras`, lalu jalankan:
 
-The dataset contains real images and AI-generated images
-created using several generative models.
+```powershell
+py -3.11 -m venv "$env:USERPROFILE\venvs\ai-image-classifier"
+& "$env:USERPROFILE\venvs\ai-image-classifier\Scripts\Activate.ps1"
+python -m pip install -r requirements.txt
+python app/app.py
+```
 
-Target:
-- Real Image
-- AI-Generated Image
+Buka alamat lokal yang dicetak Gradio (umumnya `http://127.0.0.1:7860`).
+Untuk penggunaan deployment, folder Space minimal harus berisi `app/app.py`,
+`app/inference.py`, `artifacts/configs/` yang dipakai aplikasi,
+`artifacts/models/custom_cnn_v3_best.keras`, `requirements.txt`, dan file ini.
+Folder dataset, `eda`, `evaluation`, `splits`, notebook, serta model lain tidak
+diperlukan untuk inference.
 
-## 4. Project Pipeline
+## Deploy ke Hugging Face Spaces
 
-1. Dataset Analysis and EDA
-2. Data Cleaning and Preparation
-3. CNN Model Development
-4. Model Training and Hyperparameter Tuning
-5. Final Testing and Model Comparison
-6. Deployment and Web Application
+Folder `hf_space/` adalah payload terpisah berisi hanya aplikasi, konfigurasi
+inference, dan model terpilih. Jalankan perintah berikut dari root project di
+PowerShell. Tentukan username Hugging Face dan nama Space yang ingin digunakan:
 
-## 5. Model Architectures
+```powershell
+$env:HF_USERNAME = "username-anda"
+$env:HF_SPACE_NAME = "real-vs-ai-image-classifier"
+$env:HF_GIT_EMAIL = "email-anda@example.com"
+hf auth login --add-to-git-credential
+hf repos create "$($env:HF_USERNAME)/$($env:HF_SPACE_NAME)" --repo-type space --space-sdk gradio
 
-### Model A: Custom CNN
-To be completed after model development.
+Push-Location hf_space
+git init -b main
+git lfs install
+git config user.name "$($env:HF_USERNAME)"
+git config user.email "$($env:HF_GIT_EMAIL)"
+git remote add space "https://huggingface.co/spaces/$($env:HF_USERNAME)/$($env:HF_SPACE_NAME)"
+git add README.md requirements.txt .gitignore app/app.py app/inference.py `
+  artifacts/configs/deployment_config_v3.json `
+  artifacts/configs/preprocessing_config.json `
+  artifacts/configs/label_mapping.json `
+  artifacts/models/custom_cnn_v3_best.keras
+git status --short
+git commit -m "Deploy Real vs AI image classifier"
+git push -u space main
+Pop-Location
+```
 
-### Model B: MobileNetV2
-To be completed after model development.
+Buat access token di <https://huggingface.co/settings/tokens> dengan izin tulis
+untuk membuat/memperbarui Space. `hf auth login` meminta token melalui prompt
+aman; jangan menaruh token di source code, file konfigurasi, atau command yang
+disimpan. Model yang dipilih berukuran 3,77 MB, di bawah ambang 10 MB, sehingga
+tidak perlu Git LFS untuk file ini. `git lfs install` hanya menyiapkan Git LFS
+lokal; tidak ada file model lain yang di-track atau di-push.
 
-## 6. Evaluation
+URL Space setelah dibuat akan berbentuk
+`https://huggingface.co/spaces/<username>/<space-name>`. Jika build gagal,
+buka tab **Logs** pada halaman Space, periksa build/runtime log, lalu bagikan
+pesan error tanpa token atau credential.
 
-Evaluation metrics:
-- Accuracy
-- Precision
-- Recall
-- F1-score
-- Confusion Matrix
-- Model Size
-- Inference Time
+## Keterbatasan
 
-Final experimental results will be added after testing.
-
-## 7. Repository Structure
-
-See the project folder structure below.
-
-## 8. Technologies
-
-- Python
-- TensorFlow / Keras
-- NumPy
-- Pandas
-- Matplotlib
-- Scikit-learn
-- Gradio
-- Hugging Face Spaces
-- Kaggle Notebook
-
-## 9. Team Members
-
-- Michael Andreas Tjendra
-- Diky Diwa Suwanto
-- Muhammad Rizki
-- Bagas Arma
-- Andika Dermawan
-
-## 10. Deployment
-
-Deployment link: To be added.
-
-## 11. References
-
-Dataset:
-Defactify Image Dataset.
-
-Research papers and additional references
-will be added during report preparation.
+- Dataset memiliki ketimpangan kelas sekitar 5:1 (AI-generated:Real).
+- Pada test, recall kelas Real lebih rendah daripada recall kelas AI-generated;
+  sebagian gambar Real dapat salah ditandai AI-generated.
+- Hasil test menggambarkan dataset dan group-based split yang digunakan, bukan
+  jaminan performa pada semua kamera, generator, edit, atau domain gambar.
+- Skor confidence belum dikalibrasi dan tidak menggantikan pemeriksaan manusia.
+- Aplikasi hanya membedakan dua kelas; tidak menentukan generator atau
+  keaslian gambar dengan kepastian forensik.
