@@ -1,0 +1,27 @@
+{
+    "version": "v3",
+    "class_names": [
+        "Real",
+        "AI-Generated"
+    ],
+    "default_model": "Custom CNN",
+    "preprocessing": {
+        "image_size": 224,
+        "color_mode": "RGB",
+        "center_square_crop": true,
+        "resize_interpolation": "bilinear",
+        "model_input": "raw 0-255 RGB, 224x224x3 (scaling is inside each model)"
+    },
+    "models": {
+        "Custom CNN": {
+            "file": "models/custom_cnn_v3_best.keras",
+            "threshold": 0.55,
+            "needs_custom_layer": false
+        },
+        "MobileNetV2": {
+            "file": "models/mobilenetv2_v3_best.keras",
+            "threshold": 0.29,
+            "needs_custom_layer": true
+        }
+    }
+}
