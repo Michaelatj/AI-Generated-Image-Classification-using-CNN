@@ -38,21 +38,19 @@ huggingface/
 *.pth
 *.ckpt
 
-# Model artifacts
-artifacts/models/*
-!artifacts/models/.gitkeep
+# Model files (large binary files)
+*.keras
+*.h5
+*.weights.h5
+*.tflite
+*.onnx
+*.pt
+*.pth
+*.ckpt
 
-# Custom CNN
-!artifacts/models/custom_cnn_best.keras
-!artifacts/models/custom_cnn_history.csv
-!artifacts/models/custom_cnn_config.json
-!artifacts/models/custom_cnn_tuning.csv
-
-# MobileNetV2
-!artifacts/models/mobilenetv2_best.keras
-!artifacts/models/mobilenetv2_history.csv
-!artifacts/models/mobilenetv2_config.json
-!artifacts/models/mobilenetv2_tuning.csv
+# Allow all model artifacts to be tracked
+!artifacts/models/
+!artifacts/models/**
 
 # Temporary feature arrays
 artifacts/features/
