@@ -1,0 +1,150 @@
+{
+    "experiment": "Model A - Custom CNN",
+    "environment": "Colab/other",
+    "tensorflow": "2.21.0",
+    "keras": "3.13.2",
+    "dataset": "Rajarshi-Roy-research/Defactify_Image_Dataset",
+    "dataset_revision": "1c3b714c9691eb6dd11c2c1e92eab1ac29584fa0",
+    "target": "label_a",
+    "class_mapping": {
+        "0": "Real",
+        "1": "AI-Generated"
+    },
+    "preprocessing": {
+        "image_size": 224,
+        "color_mode": "RGB",
+        "center_square_crop": true,
+        "resize_interpolation": "bilinear",
+        "model_input": "raw 0-255 RGB uint8/float, 224x224x3; Rescaling(1/255) is inside the model"
+    },
+    "augmentation_training_only": {
+        "enabled": true,
+        "horizontal_flip": 0.5,
+        "random_crop_fraction": [
+            0.8,
+            1.0
+        ],
+        "jpeg_probability": 0.5,
+        "jpeg_quality": [
+            60,
+            95
+        ]
+    },
+    "shuffle": "full permutation of training rows every epoch",
+    "architecture": "3 conv blocks (32, 64, 128 filters; 2x Conv-BN-ReLU each; MaxPool), GlobalAveragePooling2D, Dense(128), Dropout, Dense(1, sigmoid)",
+    "head_dropout": 0.3,
+    "optimizer": "Adam",
+    "learning_rate": 0.0003,
+    "loss": "binary_crossentropy",
+    "batch_size": 32,
+    "epochs_requested": 20,
+    "epochs_completed": 12,
+    "callbacks": {
+        "early_stopping_patience": 5,
+        "reduce_lr_patience": 2
+    },
+    "class_weights": {
+        "0": 3.0,
+        "1": 0.6
+    },
+    "seed": 42,
+    "tuning": {
+        "ran": true,
+        "subset_train": 6000,
+        "subset_val": 1500,
+        "epochs": 2,
+        "results": [
+            {
+                "learning_rate": 0.0003,
+                "dropout": 0.3,
+                "best_val_loss": 0.45134109258651733,
+                "val_accuracy": 0.8213333487510681,
+                "val_auc": 0.6560800075531006
+            },
+            {
+                "learning_rate": 0.0003,
+                "dropout": 0.5,
+                "best_val_loss": 0.45328524708747864,
+                "val_accuracy": 0.8206666707992554,
+                "val_auc": 0.6145790815353394
+            },
+            {
+                "learning_rate": 0.001,
+                "dropout": 0.3,
+                "best_val_loss": 0.47668200731277466,
+                "val_accuracy": 0.765999972820282,
+                "val_auc": 0.8046806454658508
+            },
+            {
+                "learning_rate": 0.001,
+                "dropout": 0.5,
+                "best_val_loss": 0.5762360095977783,
+                "val_accuracy": 0.7693333625793457,
+                "val_auc": 0.6145665049552917
+            }
+        ],
+        "selected": {
+            "learning_rate": 0.0003,
+            "dropout": 0.3
+        }
+    },
+    "validation_results": {
+        "keras_evaluate": {
+            "accuracy": 0.9072715044021606,
+            "auc": 0.9422371983528137,
+            "loss": 0.23517322540283203,
+            "precision": 0.9560454487800598,
+            "recall": 0.93155437707901
+        },
+        "roc_auc": 0.9422954417910807,
+        "at_threshold_0.50": {
+            "threshold": 0.5,
+            "accuracy": 0.9072715143428952,
+            "balanced_accuracy": 0.8587058038692461,
+            "precision_ai": 0.9560454607695468,
+            "recall_ai": 0.9315543695797198,
+            "recall_real": 0.7858572381587725,
+            "f1_ai": 0.9436410325719692,
+            "f1_macro": 0.8410995131511884,
+            "confusion_matrix": [
+                [
+                    1178,
+                    321
+                ],
+                [
+                    513,
+                    6982
+                ]
+            ]
+        },
+        "at_tuned_threshold": {
+            "threshold": 0.42,
+            "accuracy": 0.9158327774071603,
+            "balanced_accuracy": 0.8459639759839893,
+            "precision_ai": 0.9483630556294916,
+            "recall_ai": 0.9507671781187458,
+            "recall_real": 0.7411607738492328,
+            "f1_ai": 0.9495635951762276,
+            "f1_macro": 0.8477257385078856,
+            "confusion_matrix": [
+                [
+                    1111,
+                    388
+                ],
+                [
+                    369,
+                    7126
+                ]
+            ]
+        },
+        "tuned_threshold": 0.42,
+        "threshold_selection": "max macro-F1 on validation set"
+    },
+    "decision_threshold": 0.42,
+    "decision_threshold_selection": "max macro-F1 on validation set",
+    "training_samples": 42018,
+    "validation_samples": 8994,
+    "model_file": "custom_cnn_best.keras",
+    "model_size_mb": 3.6,
+    "total_parameters": 304993
+}
