@@ -1,113 +1,153 @@
----
-title: Real vs AI-Generated Image Classifier
-emoji: 🖼️
-colorFrom: purple
-colorTo: blue
-sdk: gradio
-sdk_version: 5.49.1
-app_file: app/app.py
-pinned: false
----
-
 # Real vs AI-Generated Image Classification
 
-Aplikasi Gradio ini membandingkan gambar masukan dengan dua kelas: **Real**
-dan **AI-generated**. Model yang dipakai adalah **Custom CNN v3**, dipilih
-berdasarkan hasil test pada `final_testing_comparison.ipynb` dan
-`artifacts/evaluation/final_test_scenarios_v3.csv`.
+Klasifikasi biner gambar **Real** vs **AI-Generated** memakai dua model yang
+dibandingkan secara adil pada split test yang sama:
 
-Model menerima gambar RGB 224 × 224. Sebelum masuk ke model, gambar dikonversi
-ke RGB, di-center-crop menjadi persegi, lalu di-resize dengan bilinear.
-Normalisasi `1/255` sudah berada di dalam model. Augmentasi yang digunakan
-saat training tidak diterapkan saat inference.
+- **Model A: Custom CNN** (±3,8 MB), dipakai sebagai model default.
+- **Model B: MobileNetV2** (transfer learning, ±19 MB).
 
-## Performa test
+Demo online: **[Hugging Face Space](https://huggingface.co/spaces/MichaelAndreasTjendra/AI-Image-Classification)**
+(isi dengan URL Space Anda).
 
-Pada test split group-based (44.988 gambar), threshold validation **0,55**
-menghasilkan:
+## Dataset
 
-| Metrik              |  Hasil |
-| ------------------- | -----: |
-| Accuracy            | 94,71% |
-| Macro-F1            | 90,21% |
-| Balanced accuracy   | 89,16% |
-| ROC-AUC             | 97,44% |
-| Recall Real         | 80,85% |
-| Recall AI-generated | 97,48% |
+[Defactify Image Dataset](https://huggingface.co/datasets/Rajarshi-Roy-research/Defactify_Image_Dataset)
+(`Label_A`: Real = 0, AI-Generated = 1). Gambar AI berasal dari Stable
+Diffusion 2.1, Stable Diffusion XL, Stable Diffusion 3, DALL-E 3, dan
+Midjourney v6; gambar Real berasal dari COCO.
 
-Label 0 berarti Real; label 1 berarti AI-generated. Nilai sigmoid model adalah
-probabilitas AI-generated. Nilai tersebut diklasifikasikan sebagai
-AI-generated jika sekurang-kurangnya 0,55, selain itu Real. Confidence score
-adalah probabilitas kelas yang diprediksi dan bukan jaminan kebenaran.
+Split dibuat **berbasis grup caption** agar gambar dari caption yang sama tidak
+bocor antar split.
 
-## Menjalankan secara lokal
+| Split      | Gambar | Real  | AI-Generated | Grup caption |
+| ---------- | -----: | ----: | -----------: | -----------: |
+| Train      | 42.018 | 7.003 |       35.015 |        4.320 |
+| Validation |  8.994 | 1.499 |        7.495 |          926 |
+| Test       | 44.988 | 7.498 |       37.490 |        4.629 |
 
-Pastikan model terpilih tersedia di
-`artifacts/models/custom_cnn_v3_best.keras`, lalu jalankan:
+Rasio kelas sekitar 1:5 (Real : AI-Generated) di semua split.
 
-```powershell
-py -3.11 -m venv "$env:USERPROFILE\venvs\ai-image-classifier"
-& "$env:USERPROFILE\venvs\ai-image-classifier\Scripts\Activate.ps1"
-python -m pip install -r requirements.txt
-python app/app.py
+## Preprocessing
+
+Gambar dikonversi ke RGB, di-*center-crop* menjadi persegi, lalu di-resize ke
+224 × 224 (bilinear). Input model adalah piksel mentah 0-255; normalisasi ada
+di dalam model (`1/255` untuk Custom CNN, `[-1, 1]` untuk MobileNetV2).
+Augmentasi hanya dipakai saat training.
+
+## Hasil pada test split (44.988 gambar)
+
+Threshold dipilih pada **validation** (maksimum macro-F1) dan hanya dibaca saat
+testing, tidak pernah dituning pada test.
+
+| Model       | Skenario             | Accuracy | Macro-F1 | Balanced acc. | ROC-AUC | Recall Real | Recall AI |
+| ----------- | -------------------- | -------: | -------: | ------------: | ------: | ----------: | --------: |
+| Custom CNN  | threshold 0,50       |   94,72% |   90,10% |        88,50% |  97,44% |      79,17% |    97,83% |
+| Custom CNN  | validation (0,42)    |   94,56% |   89,53% |        87,04% |  97,44% |      75,77% |    98,31% |
+| MobileNetV2 | threshold 0,50       |   90,07% |   83,71% |        87,15% |  94,99% |      82,77% |    91,53% |
+| MobileNetV2 | validation (0,29)    |   91,96% |   85,05% |        83,96% |  94,99% |      71,97% |    95,95% |
+
+Custom CNN lebih baik di hampir semua metrik dan jauh lebih kecil, sehingga
+dijadikan model default.
+
+Akurasi per sumber gambar (threshold validation):
+
+| Sumber                     | Custom CNN | MobileNetV2 |
+| -------------------------- | ---------: | ----------: |
+| Real                       |     75,77% |      71,97% |
+| Stable Diffusion 2.1       |     98,43% |      95,44% |
+| Stable Diffusion XL        |     99,57% |      96,16% |
+| Stable Diffusion 3         |     97,64% |      94,91% |
+| DALL-E 3                   |     97,01% |      97,40% |
+| Midjourney v6              |     98,92% |      95,87% |
+
+Label 0 = Real, label 1 = AI-Generated. Keluaran sigmoid adalah probabilitas
+AI-Generated; gambar dianggap AI-Generated jika nilainya ≥ threshold. Skor ini
+bukan tingkat kepastian dan belum dikalibrasi.
+
+## Struktur repository
+
+```
+├── notebooks/
+│   ├── eda_data_preparation.ipynb       # EDA, group split, konfigurasi
+│   ├── model_a_custom_cnn.ipynb         # training & evaluasi Custom CNN
+│   ├── model_b_mobilenetv2.ipynb        # training & evaluasi MobileNetV2
+│   └── final_testing_comparison_new.ipynb  # perbandingan final di test split
+├── artifacts/
+│   ├── configs/      # deployment_config.json, preprocessing_config.json, label_mapping.json, dataset_manifest.json
+│   ├── eda/          # distribusi label, split, resolusi
+│   ├── evaluation/   # metrik, confusion matrix, ROC, Grad-CAM, error analysis
+│   └── models/       # custom_cnn_best.keras, mobilenetv2_best.keras
+├── requirements.txt  # dependensi notebook
+└── README.md
 ```
 
-Buka alamat lokal yang dicetak Gradio (umumnya `http://127.0.0.1:7860`).
-Untuk penggunaan deployment, folder Space minimal harus berisi `app/app.py`,
-`app/inference.py`, `artifacts/configs/` yang dipakai aplikasi,
-`artifacts/models/custom_cnn_v3_best.keras`, `requirements.txt`, dan file ini.
-Folder dataset, `eda`, `evaluation`, `splits`, notebook, serta model lain tidak
-diperlukan untuk inference.
+Urutan notebook: EDA → Model A → Model B → final testing.
 
-## Deploy ke Hugging Face Spaces
+## Demo Hugging Face Space
 
-Folder `hf_space/` adalah payload terpisah berisi hanya aplikasi, konfigurasi
-inference, dan model terpilih. Jalankan perintah berikut dari root project di
-PowerShell. Tentukan username Hugging Face dan nama Space yang ingin digunakan:
+Aplikasi Gradio (`app.py`) memuat kedua model, memilih threshold masing-masing
+dari konfigurasi, dan menampilkan prediksi, skor P(AI-Generated), serta peta
+**Grad-CAM** (area hangat = bagian gambar yang menaikkan skor AI-Generated).
 
-```powershell
-$env:HF_USERNAME = "username-anda"
-$env:HF_SPACE_NAME = "real-vs-ai-image-classifier"
-$env:HF_GIT_EMAIL = "email-anda@example.com"
+File Space (repo terpisah di Hugging Face):
+
+```
+├── README.md          # berisi konfigurasi Space (YAML) di bagian atas
+├── app.py
+├── requirements.txt
+└── models/
+    ├── custom_cnn_best.keras
+    └── mobilenetv2_best.keras   # >10 MB, di-track dengan Git LFS
+```
+
+Menjalankan secara lokal (dari folder Space):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
+```
+
+Buka alamat yang dicetak Gradio (umumnya `http://127.0.0.1:7860`).
+
+Deploy/update Space:
+
+```bash
 hf auth login --add-to-git-credential
-hf repos create "$($env:HF_USERNAME)/$($env:HF_SPACE_NAME)" --repo-type space --space-sdk gradio
-
-Push-Location hf_space
-git init -b main
 git lfs install
-git config user.name "$($env:HF_USERNAME)"
-git config user.email "$($env:HF_GIT_EMAIL)"
-git remote add space "https://huggingface.co/spaces/$($env:HF_USERNAME)/$($env:HF_SPACE_NAME)"
-git add README.md requirements.txt .gitignore app/app.py app/inference.py `
-  artifacts/configs/deployment_config_v3.json `
-  artifacts/configs/preprocessing_config.json `
-  artifacts/configs/label_mapping.json `
-  artifacts/models/custom_cnn_v3_best.keras
-git status --short
-git commit -m "Deploy Real vs AI image classifier"
-git push -u space main
-Pop-Location
+git remote add space https://huggingface.co/spaces/<username>/<nama-space>
+git add README.md app.py requirements.txt models/
+git commit -m "Update Space"
+git push space main
 ```
 
-Buat access token di <https://huggingface.co/settings/tokens> dengan izin tulis
-untuk membuat/memperbarui Space. `hf auth login` meminta token melalui prompt
-aman; jangan menaruh token di source code, file konfigurasi, atau command yang
-disimpan. Model yang dipilih berukuran 3,77 MB, di bawah ambang 10 MB, sehingga
-tidak perlu Git LFS untuk file ini. `git lfs install` hanya menyiapkan Git LFS
-lokal; tidak ada file model lain yang di-track atau di-push.
+Token dibuat di <https://huggingface.co/settings/tokens> dengan izin tulis;
+jangan menyimpannya di kode atau file konfigurasi. Mengganti nama file model
+tidak mengubah URL Space; yang perlu disesuaikan hanya path di `app.py`
+(`MODELS`) agar cocok dengan nama file di folder `models/`.
 
-URL Space setelah dibuat akan berbentuk
-`https://huggingface.co/spaces/<username>/<space-name>`. Jika build gagal,
-buka tab **Logs** pada halaman Space, periksa build/runtime log, lalu bagikan
-pesan error tanpa token atau credential.
+## Menjalankan notebook
+
+Notebook dijalankan di Kaggle atau Colab (butuh GPU untuk training).
+
+```bash
+pip install -r requirements.txt
+```
+
+Notebook meng-clone repo ini, membaca `artifacts/`, dan menulis hasil
+evaluasi kembali ke sana.
 
 ## Keterbatasan
 
-- Dataset memiliki ketimpangan kelas sekitar 5:1 (AI-generated:Real).
-- Pada test, recall kelas Real lebih rendah daripada recall kelas AI-generated;
-  sebagian gambar Real dapat salah ditandai AI-generated.
-- Hasil test menggambarkan dataset dan group-based split yang digunakan, bukan
-  jaminan performa pada semua kamera, generator, edit, atau domain gambar.
-- Skor confidence belum dikalibrasi dan tidak menggantikan pemeriksaan manusia.
-- Aplikasi hanya membedakan dua kelas; tidak menentukan generator atau
-  keaslian gambar dengan kepastian forensik.
+- Dataset timpang (±5:1 AI-Generated : Real), sehingga recall kelas Real
+  (72-83%) lebih rendah daripada recall AI-Generated; sebagian gambar Real
+  dapat salah ditandai AI-Generated.
+- Gambar Real berasal dari COCO. Foto dari kamera/HP, hasil edit, kompresi, atau
+  generator lain bisa berperilaku berbeda dan lebih sering salah dikenali.
+- Hasil test menggambarkan dataset dan group-based split yang dipakai, bukan
+  jaminan performa di domain lain.
+- Skor model sering sangat yakin (mendekati 0 atau 1) walau salah; Grad-CAM
+  menjelaskan perilaku model, bukan bukti bahwa prediksi benar.
+- Aplikasi hanya membedakan dua kelas; tidak menentukan generator maupun
+  keaslian gambar secara forensik, dan tidak menggantikan pemeriksaan manusia.
