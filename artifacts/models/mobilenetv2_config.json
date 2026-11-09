@@ -1,5 +1,5 @@
 {
-    "experiment": "Model B - MobileNetV2 transfer learning (v3)",
+    "experiment": "Model B - MobileNetV2 transfer learning",
     "environment": "Colab/other",
     "tensorflow": "2.21.0",
     "keras": "3.13.2",
@@ -107,8 +107,8 @@
         },
         "stage2_finetune": {
             "accuracy": 0.9011563062667847,
-            "auc": 0.9499736428260803,
-            "loss": 0.2435789704322815,
+            "auc": 0.9499843716621399,
+            "loss": 0.24358072876930237,
             "precision": 0.9633838534355164,
             "recall": 0.9162108302116394
         }
@@ -116,12 +116,12 @@
     "validation_results": {
         "keras_evaluate": {
             "accuracy": 0.9011563062667847,
-            "auc": 0.9499736428260803,
-            "loss": 0.2435789704322815,
+            "auc": 0.9499843716621399,
+            "loss": 0.24358072876930237,
             "precision": 0.9633838534355164,
             "recall": 0.9162108302116394
         },
-        "roc_auc": 0.9500895638230691,
+        "roc_auc": 0.9500945482445269,
         "at_threshold_0.50": {
             "threshold": 0.5,
             "accuracy": 0.9011563264398488,
@@ -169,7 +169,7 @@
     "decision_threshold_selection": "max macro-F1 on validation set",
     "training_samples": 42018,
     "validation_samples": 8994,
-    "model_file": "mobilenetv2_v3_best.keras",
+    "model_file": "mobilenetv2_best.keras",
     "model_size_mb": 18.31,
     "total_parameters": 2259265
 }
