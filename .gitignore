@@ -41,8 +41,18 @@ huggingface/
 # Model artifacts
 artifacts/models/*
 !artifacts/models/.gitkeep
-!artifacts/models/custom_cnn_v3_best.keras
-!artifacts/models/custom_cnn_v3_config.json
+
+# Custom CNN
+!artifacts/models/custom_cnn_best.keras
+!artifacts/models/custom_cnn_history.csv
+!artifacts/models/custom_cnn_config.json
+!artifacts/models/custom_cnn_tuning.csv
+
+# MobileNetV2
+!artifacts/models/mobilenetv2_best.keras
+!artifacts/models/mobilenetv2_history.csv
+!artifacts/models/mobilenetv2_config.json
+!artifacts/models/mobilenetv2_tuning.csv
 
 # Temporary feature arrays
 artifacts/features/
